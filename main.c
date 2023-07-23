@@ -53,7 +53,7 @@ Caracas 10/07/2023
 
 
 /* Frequency definitions */
-#define MAX_FREQUENCY      100000  //100 KHz
+#define MAX_FREQUENCY      20000  //100 KHz
 #define DELTA_FREQUENCY    10      //10H z
 #define NUMBER_STEPS       (MAX_FREQUENCY % DELTA_FREQUENCY)
 
@@ -176,7 +176,7 @@ double resistor_Value(GENE_DEF value);
 double capacitance_Value(GENE_DEF value);
 
 /* Band Pass Filter Function */
-float bp_Function(FILTER_CHROMOSOME genes, uint32_t frecuency);
+float bp_Function(FILTER_CHROMOSOME genes, uint32_t freq);
 
 /* Global variable definitions */
 char input_Dummy[1];
@@ -912,9 +912,11 @@ double capacitance_Value(GENE_DEF value) {
 }
 
 
-float bp_Function(FILTER_CHROMOSOME genes, uint32_t frecuency){
+float bp_Function(FILTER_CHROMOSOME genes, uint32_t freq){
 
     double R1, C1, R2, C2, num, term1, term2, den;
+
+    double frecuency = freq * 2 * 3.14159265;
 
     R1 = resistor_Value(genes.Admitance_1.R_Gene);
     C1 = capacitance_Value(genes.Admitance_1.C_Gene);
