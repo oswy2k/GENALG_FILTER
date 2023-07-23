@@ -19,6 +19,7 @@ Caracas 10/07/2023
 #include <stdbool.h>
 #include <math.h>
 #include <time.h>
+#include <float.h>
 
 /* Uncomment to enable DEBUG of functions */
 //#define DEBUG_RANDOMIZE 
@@ -91,9 +92,9 @@ typedef union{
 
     /* Defined bit separated values for Genes*/
     struct{
-        uint8_t decade      : 3;
-        uint8_t value_8_LSB : 8;
-        uint8_t value_5_MSB : 5;
+        uint16_t decade      : 3;
+        uint16_t value_8_LSB : 8;
+        uint16_t value_5_MSB : 5;
     }gen_struct;
 
     /* Bitfield definition for mutations */
@@ -138,7 +139,7 @@ typedef struct{
 } FILTER_CHROMOSOME;
 
 /* typedef for filtering functions*/
-typedef void* (*filter_Function)(int x);
+typedef void* (*filter_Function)(FILTER_CHROMOSOME genes);
 
 /* Prototype Sorting functions definition */
 void bubbleSort(FILTER_CHROMOSOME *population);
@@ -170,6 +171,12 @@ void filter_Select(const char* filter_Name, int cutoff_1, int cutoff_2, int gain
 /* Filter Fitness calculate */
 void fitness_Filter_Assign(FILTER_CHROMOSOME population);
 
+/* Resistances/capacitor value calculate */
+double resistor_Value(GENE_DEF value);
+double capacitance_Value(GENE_DEF value);
+
+/* Band Pass Filter Function */
+float bp_Function(FILTER_CHROMOSOME genes, uint32_t frecuency);
 
 /* Global variable definitions */
 char input_Dummy[1];
@@ -211,6 +218,28 @@ int main(){
     //print_Genes(&descendant_Population);
 
     //gene_Mutation(&parent_Population);
+
+    //R1=R2 10k, C1=80nF, C2=32pF
+
+    FILTER_CHROMOSOME temp;
+
+    temp.Admitance_1.R_Gene.gen_struct.value_5_MSB = 0b00000;
+    temp.Admitance_1.R_Gene.gen_struct.value_8_LSB = 0x01;
+    temp.Admitance_1.R_Gene.gen_struct.decade = 0b101;
+
+    temp.Admitance_1.C_Gene.gen_struct.value_5_MSB = 0b00000;
+    temp.Admitance_1.C_Gene.gen_struct.value_8_LSB = 0x50;
+    temp.Admitance_1.C_Gene.gen_struct.decade = 0b100;
+
+    temp.Admitance_2.R_Gene.gen_struct.value_5_MSB = 0b00000;
+    temp.Admitance_2.R_Gene.gen_struct.value_8_LSB = 0x01;
+    temp.Admitance_2.R_Gene.gen_struct.decade = 0b101;
+
+    temp.Admitance_2.C_Gene.gen_struct.value_5_MSB = 0b00000;
+    temp.Admitance_2.C_Gene.gen_struct.value_8_LSB = 0x20;
+    temp.Admitance_2.C_Gene.gen_struct.decade = 0b111;
+
+    fitness_Filter_Assign(temp);
 
     printf("Press Enter to Exit...\n");
     scanf("%c",&input_Dummy);
@@ -860,15 +889,47 @@ void filter_Select(const char* filter_Name, int cutoff_1, int cutoff_2, int gain
 
 void fitness_Filter_Assign(FILTER_CHROMOSOME population) {
 
-
-
-
     for (int freq = 0; freq < MAX_FREQUENCY; freq += DELTA_FREQUENCY) {
-
+        printf("Frequency: %i, Gain: %g dB\n",freq,20*log10(bp_Function(population, freq)));
     }
 
 }
 
+double resistor_Value(GENE_DEF value) {
+
+    double temp = 0;
+    temp = (double) ((value.gen_struct.value_5_MSB << 8) + (value.gen_struct.value_8_LSB));
+    temp = temp * pow(10, value.gen_struct.decade - 1);
+    return temp;
+}
+
+double capacitance_Value(GENE_DEF value) {
+
+    double temp = 0;
+    temp = (double)( (value.gen_struct.value_5_MSB << 8) + (value.gen_struct.value_8_LSB));
+    temp = temp * pow(0.1, value.gen_struct.decade + 5);
+    return temp;
+}
+
+
+float bp_Function(FILTER_CHROMOSOME genes, uint32_t frecuency){
+
+    double R1, C1, R2, C2, num, term1, term2, den;
+
+    R1 = resistor_Value(genes.Admitance_1.R_Gene);
+    C1 = capacitance_Value(genes.Admitance_1.C_Gene);
+
+    R2 = resistor_Value(genes.Admitance_2.R_Gene);
+    C2 = capacitance_Value(genes.Admitance_2.C_Gene);
+
+    num = frecuency / (R2 * C2);
+    term1 = pow(((1 / (R1 * C1 * R2 * C2)) - pow(frecuency, 2)), 2);
+    term2 = pow((frecuency / (R1 * C1)), 2);
+
+    den = sqrt(term1+term2);
+
+    return num / den;
+}
 
 uint32_t randomize_32_t(void) {
     return (uint32_t) ((rand() % ((int)pow(2, (NUMBER_OF_BITS_PER_GENE - 1)))) * (rand() % (int)(pow(2, (NUMBER_OF_BITS_PER_GENE - 1)))));
