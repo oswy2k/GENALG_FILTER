@@ -234,10 +234,6 @@ int main(){
 
     print_Generation(Filter_Population_Parent);
 
-    //printf("Descendant\n\n");
-    //print_Genes_Bitfield(&descendant_Population);
-
-    //gene_Mutation(&parent_Population);
     scanf("%c", &input_Dummy);
 
     printf("Press Enter to Exit...\n");
@@ -247,6 +243,7 @@ int main(){
 }
 
 
+/* Buble Sort algorithm for 6 genes */
 void bubbleSort(FILTER_CHROMOSOME *population){
 
     int i, j;
@@ -324,7 +321,6 @@ void bubbleSort(FILTER_CHROMOSOME *population){
             }
         }
 
-
         if (swapped == false) {
             break;
         }
@@ -334,7 +330,7 @@ void bubbleSort(FILTER_CHROMOSOME *population){
 }
 
 
-
+/* Quick Sort algorithm for 6 genes */
 void quickSort(FILTER_CHROMOSOME *population, int left_limit, int right_limit){
 
     int left, right;
@@ -435,6 +431,8 @@ void quickSort(FILTER_CHROMOSOME *population, int left_limit, int right_limit){
 
 }
 
+
+/* Randomize Population of filters */
 void population_Randomize(FILTER_CHROMOSOME* population) {
 
     uint32_t temp = 0;
@@ -488,12 +486,14 @@ void population_Randomize(FILTER_CHROMOSOME* population) {
 }
 
 
+/* Print Bitfield function */
 void print_Bitfield(int value){
     for(int mask = BIT_15_MASK; mask != 0x0000; mask>>=1){
         printf("%i", BIT_VALUE(value,mask) );
     }
 }
 
+/* Print Genes in bitfield mode */
 void print_Genes_Bitfield(FILTER_CHROMOSOME population, int number) {
 
     printf("Fitness Value for Chromosome %i: %f\n", number, population.fitness);
@@ -552,9 +552,10 @@ void print_Genes_Bitfield(FILTER_CHROMOSOME population, int number) {
     #endif // GENE_6_EN 
 }
 
+/* Print Genes in resistance - capacitor value */
 void print_Genes(FILTER_CHROMOSOME population, int number) {
 
-    printf("Fitness Value for Chromosome %i: %f\n", number, population.fitness);
+    //printf("Fitness Value for Chromosome %i: %f\n", number, population.fitness);
 #ifdef GENE_1_EN
     printf("Admitance 1:\n");
     printf("Value for R Gene: ");
@@ -610,6 +611,8 @@ void print_Genes(FILTER_CHROMOSOME population, int number) {
 #endif // GENE_6_EN 
 }
 
+
+/* Print a generation of filters */
 void print_Generation(FILTER_CHROMOSOME *population) {
     for (int i = 0; i < NUMBER_OF_MEMEBERS; i++) {
         //print_Genes_Bitfield(population[i], i);
@@ -618,6 +621,7 @@ void print_Generation(FILTER_CHROMOSOME *population) {
 }
 
 
+/* Swap genes for recombination */
 void gene_Swap(FILTER_CHROMOSOME *p_population, FILTER_CHROMOSOME *d_population) {
 
     uint16_t swap_Mask = 0, second_Parent = 0;;
@@ -809,6 +813,8 @@ void gene_Swap(FILTER_CHROMOSOME *p_population, FILTER_CHROMOSOME *d_population)
 
 }
 
+
+/* Gene mutation function */
 void gene_Mutation(FILTER_CHROMOSOME* population){
 
     uint16_t temp_mask[6];
@@ -963,6 +969,7 @@ void gene_Mutation(FILTER_CHROMOSOME* population){
 }
 
 
+/* Select the filter type */
 void filter_Select(const char* filter_Name, int cutoff_1, int cutoff_2, int gain_1, int gain_2){
 
     for (int i = 0; i < MAX_FREQUENCY/DELTA_FREQUENCY; i++) {
@@ -983,6 +990,7 @@ void filter_Select(const char* filter_Name, int cutoff_1, int cutoff_2, int gain
 
 }
 
+/* Assign Filter Fitness */
 double fitness_Filter_Assign(FILTER_CHROMOSOME *population) {
 
     double error = 0, squared_error = 0, gain = 0;;
@@ -1009,6 +1017,7 @@ double fitness_Filter_Assign(FILTER_CHROMOSOME *population) {
     return 1;
 }
 
+/* Convert to float value for resistor */
 double resistor_Value(GENE_DEF value) {
 
     double temp = 0;
@@ -1017,6 +1026,7 @@ double resistor_Value(GENE_DEF value) {
     return temp;
 }
 
+/* Convert to float value for capacitance */
 double capacitance_Value(GENE_DEF value) {
 
     double temp = 0;
@@ -1026,6 +1036,7 @@ double capacitance_Value(GENE_DEF value) {
 }
 
 
+/* Bandpass funcion */
 float bp_Function(FILTER_CHROMOSOME genes, uint32_t freq){
 
     double R1, C1, R2, C2, num, term1, term2, den;
@@ -1047,6 +1058,8 @@ float bp_Function(FILTER_CHROMOSOME genes, uint32_t freq){
     return num / den;
 }
 
+
+/* Randomize 32 bits integger */
 uint32_t randomize_32_t(void) {
     return (uint32_t) ((rand() % ((int)pow(2, (NUMBER_OF_BITS_PER_GENE - 1)))) * (rand() % (int)(pow(2, (NUMBER_OF_BITS_PER_GENE - 1)))));
 }
