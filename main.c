@@ -137,7 +137,7 @@ typedef struct{
 
 /* Structure definition for filter generation */
 typedef struct{
-    float fitness;
+    double fitness;
     FILTER_ADMITANCE_GENES Admitance_1; //Admitance y1
     FILTER_ADMITANCE_GENES Admitance_2; //Admitance y2
     FILTER_ADMITANCE_GENES Admitance_3; //Admitance y3
@@ -188,7 +188,7 @@ float bp_Function(FILTER_CHROMOSOME genes, uint32_t freq);
 
 /* Global variable definitions */
 char input_Dummy[1];
-int filter_Ideal_Values[NUMBER_STEPS];
+int filter_Ideal_Values[MAX_FREQUENCY/DELTA_FREQUENCY];
 
 int main(){
     /* Randomize of time variables */
@@ -216,10 +216,10 @@ int main(){
         bubbleSort(Filter_Population_Parent);
     #endif // QUICKSORT 
 
-    filter_Select("BPF", 9800, 10000, 0, 50);
+    filter_Select("BPF", 9800, 10000, 0, 1);
 
-    for (int j = 0; j < NUMBER_OF_MEMEBERS; j++) {
-        print_Generation(Filter_Population_Parent);
+    for (int j = 0; j < 100; j++) {
+        //print_Generation(Filter_Population_Parent);
 
         gene_Swap(Filter_Population_Parent, Filter_Population_Descendant);
         gene_Mutation(Filter_Population_Descendant);
@@ -232,11 +232,13 @@ int main(){
         fitness_Filter_Assign(Filter_Population_Parent);
     }
 
+    print_Generation(Filter_Population_Parent);
+
     //printf("Descendant\n\n");
     //print_Genes_Bitfield(&descendant_Population);
 
     //gene_Mutation(&parent_Population);
-
+    scanf("%c", &input_Dummy);
 
     printf("Press Enter to Exit...\n");
     scanf("%c",&input_Dummy);
@@ -963,76 +965,43 @@ void gene_Mutation(FILTER_CHROMOSOME* population){
 
 void filter_Select(const char* filter_Name, int cutoff_1, int cutoff_2, int gain_1, int gain_2){
 
-
-    if (strcmp(filter_Name, "LPF")) {
-        for (int i = 0; i < NUMBER_STEPS; i++) {
-
-            if (i <= cutoff_1) {
-                filter_Ideal_Values[i] = gain_1;
-            }
-            else {
-                filter_Ideal_Values[i] = gain_2;
-            }
-        }    
-    }
-
-    else if (strcmp(filter_Name, "HPF")) {
-        for (int i = 0; i < NUMBER_STEPS; i++) {
-
-            if (i > cutoff_1) {
-                filter_Ideal_Values[i] = gain_1;
-            }
-            else {
-                filter_Ideal_Values[i] = gain_2;
-            }
+    for (int i = 0; i < MAX_FREQUENCY/DELTA_FREQUENCY; i++) {
+        if (i*DELTA_FREQUENCY > cutoff_1 && i* DELTA_FREQUENCY <=  cutoff_2) {
+            filter_Ideal_Values[i] = gain_2;
+        }
+        else {
+            filter_Ideal_Values[i] = gain_1;
         }
     }
-
-    else if (strcmp(filter_Name, "BPF")) {
-        for (int i = 0; i < NUMBER_STEPS; i++) {
-
-            if (i > cutoff_1 && i <=  cutoff_2) {
-                filter_Ideal_Values[i] = gain_2;
-            }
-            else {
-                filter_Ideal_Values[i] = gain_1;
-            }
-        }
-    }
-
-    else if (strcmp(filter_Name, "SPF")) {
-        for (int i = 0; i < NUMBER_STEPS; i++) {
-
-            if (i <= cutoff_1 | i >= cutoff_2) {
-                filter_Ideal_Values[i] = gain_2;
-            }
-            else {
-                filter_Ideal_Values[i] = gain_1;
-            }
-        }
-    }
-
-
 
 }
 
 double fitness_Filter_Assign(FILTER_CHROMOSOME *population) {
 
-    double error = 0, squared_error = 0;
+    double error = 0, squared_error = 0, gain = 0;;
     long long fitness = 0;
 
     for (int i = 0; i < NUMBER_OF_MEMEBERS; i++) {
     
         for (int freq = 0; freq < MAX_FREQUENCY; freq += DELTA_FREQUENCY) {
-            //printf("Frequency: %i, Gain: %g dB\n",freq,20*log10(bp_Function(population[i], freq)));
-            error = filter_Ideal_Values[freq/ DELTA_FREQUENCY] - (20 * log10(bp_Function(population[i], freq)));
+            
+            gain = bp_Function(population[i], freq);
+
+            if (gain <= 0) {
+                gain = 0.0000001;
+            }
+
+            gain = (20 * log10(gain));
+
+            error = filter_Ideal_Values[freq/ DELTA_FREQUENCY] - gain;
+
             squared_error = pow(error,2);
             fitness += squared_error;
         }
 
         fitness = fitness/ (MAX_FREQUENCY / DELTA_FREQUENCY);
 
-        population[i].fitness = 1/fitness;
+        population[i].fitness = 1/(fitness-1);
     }
 
 
