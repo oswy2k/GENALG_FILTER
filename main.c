@@ -31,6 +31,14 @@ Caracas 10/07/2023
 #define QUICKSORT
 //#define BUBBLESORT
 
+/* Enable Genes */
+#define GENE_1_EN 
+#define GENE_2_EN 
+//#define GENE_3_EN 
+//#define GENE_4_EN 
+//#define GENE_5_EN 
+//#define GENE_6_EN 
+
 /* Mutation range */
 #define MUTATION_PROB_R    10   //0.1% Prob
 #define MUTATION_PROB_C    10   //0.1% Prob
@@ -162,7 +170,7 @@ void gene_Mutation(FILTER_CHROMOSOME *population);
 void print_Bitfield(int value);
 
 /* Gene print function */
-void print_Genes(FILTER_CHROMOSOME population, int number);
+void print_Genes_Bitfield(FILTER_CHROMOSOME population, int number);
 void print_Generation(FILTER_CHROMOSOME *population);
 
 /* Filter Initialize function*/
@@ -209,37 +217,15 @@ int main(){
     #endif // QUICKSORT 
 
 
-    //print_Generation(Filter_Population_Parent);
+    print_Generation(Filter_Population_Parent);
 
 
     gene_Swap(Filter_Population_Parent, Filter_Population_Descendant);
     gene_Mutation(Filter_Population_Descendant);
     //printf("Descendant\n\n");
-    //print_Genes(&descendant_Population);
+    //print_Genes_Bitfield(&descendant_Population);
 
     //gene_Mutation(&parent_Population);
-
-    //R1=R2 10k, C1=80nF, C2=32pF
-
-    FILTER_CHROMOSOME temp;
-
-    temp.Admitance_1.R_Gene.gen_struct.value_5_MSB = 0b00000;
-    temp.Admitance_1.R_Gene.gen_struct.value_8_LSB = 0x01;
-    temp.Admitance_1.R_Gene.gen_struct.decade = 0b101;
-
-    temp.Admitance_1.C_Gene.gen_struct.value_5_MSB = 0b00000;
-    temp.Admitance_1.C_Gene.gen_struct.value_8_LSB = 0x50;
-    temp.Admitance_1.C_Gene.gen_struct.decade = 0b100;
-
-    temp.Admitance_2.R_Gene.gen_struct.value_5_MSB = 0b00000;
-    temp.Admitance_2.R_Gene.gen_struct.value_8_LSB = 0x01;
-    temp.Admitance_2.R_Gene.gen_struct.decade = 0b101;
-
-    temp.Admitance_2.C_Gene.gen_struct.value_5_MSB = 0b00000;
-    temp.Admitance_2.C_Gene.gen_struct.value_8_LSB = 0x20;
-    temp.Admitance_2.C_Gene.gen_struct.decade = 0b111;
-
-    fitness_Filter_Assign(temp);
 
     printf("Press Enter to Exit...\n");
     scanf("%c",&input_Dummy);
@@ -263,66 +249,63 @@ void bubbleSort(FILTER_CHROMOSOME *population){
             if (population[j].fitness > population[j + 1].fitness) {
 
                 aux = population[j].fitness;
-
-                aux1.R_Gene.u16 = population[j].Admitance_1.R_Gene.u16;
-                aux1.C_Gene.u16 = population[j].Admitance_1.C_Gene.u16;
-
-                aux2.R_Gene.u16 = population[j].Admitance_2.R_Gene.u16;
-                aux2.C_Gene.u16 = population[j].Admitance_2.C_Gene.u16;
-
-                aux3.R_Gene.u16 = population[j].Admitance_3.R_Gene.u16;
-                aux3.C_Gene.u16 = population[j].Admitance_3.C_Gene.u16;
-
-                aux4.R_Gene.u16 = population[j].Admitance_4.R_Gene.u16;
-                aux4.C_Gene.u16 = population[j].Admitance_4.C_Gene.u16;
-
-                aux5.R_Gene.u16 = population[j].Admitance_5.R_Gene.u16;
-                aux5.C_Gene.u16 = population[j].Admitance_5.C_Gene.u16;
-
-                aux6.R_Gene.u16 = population[j].Admitance_6.R_Gene.u16;
-                aux6.C_Gene.u16 = population[j].Admitance_6.C_Gene.u16;
-
                 population[j].fitness = population[j + 1].fitness;
-
-                population[j].Admitance_1.R_Gene.u16 = population[j+1].Admitance_1.R_Gene.u16;
-                population[j].Admitance_1.C_Gene.u16 = population[j+1].Admitance_1.C_Gene.u16;
-                                                                   
-                population[j].Admitance_2.R_Gene.u16 = population[j+1].Admitance_2.R_Gene.u16;
-                population[j].Admitance_2.C_Gene.u16 = population[j+1].Admitance_2.C_Gene.u16;
-                                                                   
-                population[j].Admitance_3.R_Gene.u16 = population[j+1].Admitance_3.R_Gene.u16;
-                population[j].Admitance_3.C_Gene.u16 = population[j+1].Admitance_3.C_Gene.u16;
-                                                                   
-                population[j].Admitance_4.R_Gene.u16 = population[j+1].Admitance_4.R_Gene.u16;
-                population[j].Admitance_4.C_Gene.u16 = population[j+1].Admitance_4.C_Gene.u16;
-                                                                   
-                population[j].Admitance_5.R_Gene.u16 = population[j+1].Admitance_5.R_Gene.u16;
-                population[j].Admitance_5.C_Gene.u16 = population[j+1].Admitance_5.C_Gene.u16;
-                                                                   
-                population[j].Admitance_6.R_Gene.u16 = population[j+1].Admitance_6.R_Gene.u16;
-                population[j].Admitance_6.C_Gene.u16 = population[j+1].Admitance_6.C_Gene.u16;
-
-
                 population[j + 1].fitness = aux;
 
+                #ifdef GENE_1_EN
+                aux1.R_Gene.u16 = population[j].Admitance_1.R_Gene.u16;
+                aux1.C_Gene.u16 = population[j].Admitance_1.C_Gene.u16;
+                population[j].Admitance_1.R_Gene.u16 = population[j + 1].Admitance_1.R_Gene.u16;
+                population[j].Admitance_1.C_Gene.u16 = population[j + 1].Admitance_1.C_Gene.u16;
                 population[j + 1].Admitance_1.R_Gene.u16 = aux1.R_Gene.u16;
                 population[j + 1].Admitance_1.C_Gene.u16 = aux1.C_Gene.u16;
-                                                         
+                #endif // GENE_1_EN
+
+                #ifdef GENE_2_EN
+                aux2.R_Gene.u16 = population[j].Admitance_2.R_Gene.u16;
+                aux2.C_Gene.u16 = population[j].Admitance_2.C_Gene.u16;
+                population[j].Admitance_2.R_Gene.u16 = population[j + 1].Admitance_2.R_Gene.u16;
+                population[j].Admitance_2.C_Gene.u16 = population[j + 1].Admitance_2.C_Gene.u16;
                 population[j + 1].Admitance_2.R_Gene.u16 = aux2.R_Gene.u16;
                 population[j + 1].Admitance_2.C_Gene.u16 = aux2.C_Gene.u16;
-                                                         
+                #endif // GENE_2_EN
+                
+                #ifdef GENE_3_EN
+                aux3.R_Gene.u16 = population[j].Admitance_3.R_Gene.u16;
+                aux3.C_Gene.u16 = population[j].Admitance_3.C_Gene.u16;
+                population[j].Admitance_3.R_Gene.u16 = population[j + 1].Admitance_3.R_Gene.u16;
+                population[j].Admitance_3.C_Gene.u16 = population[j + 1].Admitance_3.C_Gene.u16;
                 population[j + 1].Admitance_3.R_Gene.u16 = aux3.R_Gene.u16;
                 population[j + 1].Admitance_3.C_Gene.u16 = aux3.C_Gene.u16;
-                                                         
+                #endif // GENE_3_EN
+                
+                #ifdef GENE_4_EN
+                aux4.R_Gene.u16 = population[j].Admitance_4.R_Gene.u16;
+                aux4.C_Gene.u16 = population[j].Admitance_4.C_Gene.u16;
+                population[j].Admitance_4.R_Gene.u16 = population[j + 1].Admitance_4.R_Gene.u16;
+                population[j].Admitance_4.C_Gene.u16 = population[j + 1].Admitance_4.C_Gene.u16;
                 population[j + 1].Admitance_4.R_Gene.u16 = aux4.R_Gene.u16;
                 population[j + 1].Admitance_4.C_Gene.u16 = aux4.C_Gene.u16;
-                                                         
+                #endif // GENE_4_EN
+                
+                #ifdef GENE_5_EN
+                aux5.R_Gene.u16 = population[j].Admitance_5.R_Gene.u16;
+                aux5.C_Gene.u16 = population[j].Admitance_5.C_Gene.u16;
+                population[j].Admitance_5.R_Gene.u16 = population[j + 1].Admitance_5.R_Gene.u16;
+                population[j].Admitance_5.C_Gene.u16 = population[j + 1].Admitance_5.C_Gene.u16;
                 population[j + 1].Admitance_5.R_Gene.u16 = aux5.R_Gene.u16;
                 population[j + 1].Admitance_5.C_Gene.u16 = aux5.C_Gene.u16;
-                                                         
+                #endif // GENE_5_EN
+                
+                #ifdef GENE_6_EN
+                aux6.R_Gene.u16 = population[j].Admitance_6.R_Gene.u16;
+                aux6.C_Gene.u16 = population[j].Admitance_6.C_Gene.u16;
+                population[j].Admitance_6.R_Gene.u16 = population[j + 1].Admitance_6.R_Gene.u16;
+                population[j].Admitance_6.C_Gene.u16 = population[j + 1].Admitance_6.C_Gene.u16;
                 population[j + 1].Admitance_6.R_Gene.u16 = aux6.R_Gene.u16;
                 population[j + 1].Admitance_6.C_Gene.u16 = aux6.C_Gene.u16;
-
+                #endif // GENE_6_EN
+                                                                   
                 swapped = true;
 
             }
@@ -363,66 +346,64 @@ void quickSort(FILTER_CHROMOSOME *population, int left_limit, int right_limit){
         if(left <= right){
 
                 aux = population[left].fitness;
+                population[left].fitness = population[right].fitness;
+                population[right].fitness = aux;
 
+
+                #ifdef GENE_1_EN
                 aux1.R_Gene.u16 = population[left].Admitance_1.R_Gene.u16;
                 aux1.C_Gene.u16 = population[left].Admitance_1.C_Gene.u16;
-
-                aux2.R_Gene.u16 = population[left].Admitance_2.R_Gene.u16;
-                aux2.C_Gene.u16 = population[left].Admitance_2.C_Gene.u16;
-
-                aux3.R_Gene.u16 = population[left].Admitance_3.R_Gene.u16;
-                aux3.C_Gene.u16 = population[left].Admitance_3.C_Gene.u16;
-                                            
-                aux4.R_Gene.u16 = population[left].Admitance_4.R_Gene.u16;
-                aux4.C_Gene.u16 = population[left].Admitance_4.C_Gene.u16;
-                                          
-                aux5.R_Gene.u16 = population[left].Admitance_5.R_Gene.u16;
-                aux5.C_Gene.u16 = population[left].Admitance_5.C_Gene.u16;
-                                          
-                aux6.R_Gene.u16 = population[left].Admitance_6.R_Gene.u16;
-                aux6.C_Gene.u16 = population[left].Admitance_6.C_Gene.u16;
-
-
-                population[left].fitness = population[right].fitness;
-
                 population[left].Admitance_1.R_Gene.u16 = population[right].Admitance_1.R_Gene.u16;
                 population[left].Admitance_1.C_Gene.u16 = population[right].Admitance_1.C_Gene.u16;
-                                                                   
-                population[left].Admitance_2.R_Gene.u16 = population[right].Admitance_2.R_Gene.u16;
-                population[left].Admitance_2.C_Gene.u16 = population[right].Admitance_2.C_Gene.u16;
-                                                             
-                population[left].Admitance_3.R_Gene.u16 = population[right].Admitance_3.R_Gene.u16;
-                population[left].Admitance_3.C_Gene.u16 = population[right].Admitance_3.C_Gene.u16;
-                                                                  
-                population[left].Admitance_4.R_Gene.u16 = population[right].Admitance_4.R_Gene.u16;
-                population[left].Admitance_4.C_Gene.u16 = population[right].Admitance_4.C_Gene.u16;
-                                                                 
-                population[left].Admitance_5.R_Gene.u16 = population[right].Admitance_5.R_Gene.u16;
-                population[left].Admitance_5.C_Gene.u16 = population[right].Admitance_5.C_Gene.u16;
-                                                                   
-                population[left].Admitance_6.R_Gene.u16 = population[right].Admitance_6.R_Gene.u16;
-                population[left].Admitance_6.C_Gene.u16 = population[right].Admitance_6.C_Gene.u16;
-
-
-                population[right].fitness = aux;
-              
                 population[right].Admitance_1.R_Gene.u16 = aux1.R_Gene.u16;
                 population[right].Admitance_1.C_Gene.u16 = aux1.C_Gene.u16;
-                                              
+                #endif // GENE_1_EN
+
+                #ifdef GENE_2_EN
+                aux2.R_Gene.u16 = population[left].Admitance_2.R_Gene.u16;
+                aux2.C_Gene.u16 = population[left].Admitance_2.C_Gene.u16;
+                population[left].Admitance_2.R_Gene.u16 = population[right].Admitance_2.R_Gene.u16;
+                population[left].Admitance_2.C_Gene.u16 = population[right].Admitance_2.C_Gene.u16;
                 population[right].Admitance_2.R_Gene.u16 = aux2.R_Gene.u16;
                 population[right].Admitance_2.C_Gene.u16 = aux2.C_Gene.u16;
-                                            
+                #endif // GENE_2_EN
+                
+                #ifdef GENE_3_EN
+                aux3.R_Gene.u16 = population[left].Admitance_3.R_Gene.u16;
+                aux3.C_Gene.u16 = population[left].Admitance_3.C_Gene.u16;
+                population[left].Admitance_3.R_Gene.u16 = population[right].Admitance_3.R_Gene.u16;
+                population[left].Admitance_3.C_Gene.u16 = population[right].Admitance_3.C_Gene.u16;
                 population[right].Admitance_3.R_Gene.u16 = aux3.R_Gene.u16;
                 population[right].Admitance_3.C_Gene.u16 = aux3.C_Gene.u16;
-                                       
+                #endif // GENE_3_EN
+                
+                #ifdef GENE_4_EN
+                aux4.R_Gene.u16 = population[left].Admitance_4.R_Gene.u16;
+                aux4.C_Gene.u16 = population[left].Admitance_4.C_Gene.u16;
+                population[left].Admitance_4.R_Gene.u16 = population[right].Admitance_4.R_Gene.u16;
+                population[left].Admitance_4.C_Gene.u16 = population[right].Admitance_4.C_Gene.u16;
                 population[right].Admitance_4.R_Gene.u16 = aux4.R_Gene.u16;
                 population[right].Admitance_4.C_Gene.u16 = aux4.C_Gene.u16;
-                                               
+                #endif // GENE_4_EN
+                
+                #ifdef GENE_5_EN
+                aux5.R_Gene.u16 = population[left].Admitance_5.R_Gene.u16;
+                aux5.C_Gene.u16 = population[left].Admitance_5.C_Gene.u16;
+                population[left].Admitance_5.R_Gene.u16 = population[right].Admitance_5.R_Gene.u16;
+                population[left].Admitance_5.C_Gene.u16 = population[right].Admitance_5.C_Gene.u16;
                 population[right].Admitance_5.R_Gene.u16 = aux5.R_Gene.u16;
                 population[right].Admitance_5.C_Gene.u16 = aux5.C_Gene.u16;
-                                             
+                #endif // GENE_5_EN
+                
+                #ifdef GENE_6_EN
+                aux6.R_Gene.u16 = population[left].Admitance_6.R_Gene.u16;
+                aux6.C_Gene.u16 = population[left].Admitance_6.C_Gene.u16;
+                population[left].Admitance_6.R_Gene.u16 = population[right].Admitance_6.R_Gene.u16;
+                population[left].Admitance_6.C_Gene.u16 = population[right].Admitance_6.C_Gene.u16;
                 population[right].Admitance_6.R_Gene.u16 = aux6.R_Gene.u16;
                 population[right].Admitance_6.C_Gene.u16 = aux6.C_Gene.u16;
+                #endif // GENE_6_EN
+                
 
             left++;
             right--;
@@ -449,34 +430,45 @@ void population_Randomize(FILTER_CHROMOSOME* population) {
         population[i].fitness = ((float)(rand() % 1001)) / 1000.0f;
 
         /* Method with one randomize per gene */
+        #ifdef GENE_1_EN
         temp = randomize_32_t();
         population[i].Admitance_1.R_Gene.u16 = (uint16_t)(temp & 0xFFFF);
         population[i].Admitance_1.C_Gene.u16 = (uint16_t)((temp >> 16) & 0xFFFF);
+        #endif // GENE_1_EN
 
+        #ifdef GENE_2_EN
         temp = randomize_32_t();
         population[i].Admitance_2.R_Gene.u16 = (uint16_t)(temp & 0xFFFF);
         population[i].Admitance_2.C_Gene.u16 = (uint16_t)((temp >> 16) & 0xFFFF);
-        
+        #endif // GENE_2_EN
+
+        #ifdef GENE_3_EN
         temp = randomize_32_t();
         population[i].Admitance_3.R_Gene.u16 = (uint16_t)(temp & 0xFFFF);
         population[i].Admitance_3.C_Gene.u16 = (uint16_t)((temp >> 16) & 0xFFFF);
+        #endif // GENE_3_EN
 
+        #ifdef GENE_4_EN
         temp = randomize_32_t();
         population[i].Admitance_4.R_Gene.u16 = (uint16_t)(temp & 0xFFFF);
         population[i].Admitance_4.C_Gene.u16 = (uint16_t)((temp >> 16) & 0xFFFF);
+        #endif // GENE_4_EN
 
+        #ifdef GENE_5_EN
         temp = randomize_32_t();
         population[i].Admitance_5.R_Gene.u16 = (uint16_t)(temp & 0xFFFF);
         population[i].Admitance_5.C_Gene.u16 = (uint16_t)((temp >> 16) & 0xFFFF);
+        #endif // GENE_5_EN
 
+        #ifdef GENE_6_EN
         temp = randomize_32_t();
         population[i].Admitance_6.R_Gene.u16 = (uint16_t)(temp & 0xFFFF);
         population[i].Admitance_6.C_Gene.u16 = (uint16_t)((temp >> 16) & 0xFFFF);
-      
+        #endif // GENE_6_EN   
 
         #ifdef DEBUG_RANDOMIZE
 
-        print_Genes(population[i], i);
+        print_Genes_Bitfield(population[i], i);
 
         #endif // DEBUG_RANDOMIZE
     }
@@ -489,49 +481,125 @@ void print_Bitfield(int value){
     }
 }
 
-void print_Genes(FILTER_CHROMOSOME population, int number) {
+void print_Genes_Bitfield(FILTER_CHROMOSOME population, int number) {
 
     printf("Fitness Value for Chromosome %i: %f\n", number, population.fitness);
+    #ifdef GENE_1_EN
     printf("Admitance 1:\n");
     printf("Bitfield value for R Gene: ");
     print_Bitfield(population.Admitance_1.R_Gene.u16);
     printf(", Bitfield value for C Gene: ");
     print_Bitfield(population.Admitance_1.C_Gene.u16);
     printf("\n\n");
+    #endif // GENE_1_EN   
+
+    #ifdef GENE_2_EN
     printf("Admitance 2:\n");
     printf("Bitfield value for R Gene: ");
     print_Bitfield(population.Admitance_2.R_Gene.u16);
     printf(", Bitfield value for C Gene: ");
     print_Bitfield(population.Admitance_2.C_Gene.u16);
     printf("\n\n");
+    #endif // GENE_2_EN   
+
+    #ifdef GENE_3_EN
     printf("Admitance 3:\n");
     printf("Bitfield value for R Gene: ");
     print_Bitfield(population.Admitance_3.R_Gene.u16);
     printf(", Bitfield value for C Gene: ");
     print_Bitfield(population.Admitance_3.C_Gene.u16);
     printf("\n\n");
+    #endif // GENE_3_EN   
+
+    #ifdef GENE_4_EN
     printf("Admitance 4:\n");
     printf("Bitfield value for R Gene: ");
     print_Bitfield(population.Admitance_4.R_Gene.u16);
     printf(", Bitfield value for C Gene: ");
     print_Bitfield(population.Admitance_4.C_Gene.u16);
     printf("\n\n");
+    #endif // GENE_4_EN   
+
+    #ifdef GENE_5_EN
     printf("Admitance 5:\n");
     printf("Bitfield value for R Gene: ");
     print_Bitfield(population.Admitance_5.R_Gene.u16);
     printf(", Bitfield value for C Gene: ");
     print_Bitfield(population.Admitance_5.C_Gene.u16);
     printf("\n\n");
+    #endif // GENE_5_EN 
+
+    #ifdef GENE_6_EN
     printf("Admitance 6:\n");
     printf("Bitfield value for R Gene: ");
     print_Bitfield(population.Admitance_6.R_Gene.u16);
     printf(", Bitfield value for C Gene: ");
     print_Bitfield(population.Admitance_6.C_Gene.u16);
     printf("\n\n");
+    #endif // GENE_6_EN 
+}
+
+void print_Genes(FILTER_CHROMOSOME population, int number) {
+
+    printf("Fitness Value for Chromosome %i: %f\n", number, population.fitness);
+#ifdef GENE_1_EN
+    printf("Admitance 1:\n");
+    printf("Value for R Gene: ");
+    printf("%g", resistor_Value(population.Admitance_1.R_Gene));
+    printf(", Value for C Gene: ");
+    printf("%g", capacitance_Value(population.Admitance_1.C_Gene));
+    printf("\n\n");
+#endif // GENE_1_EN   
+
+#ifdef GENE_2_EN
+    printf("Admitance 2:\n");
+    printf("Value for R Gene: ");
+    printf("%g", resistor_Value(population.Admitance_2.R_Gene));
+    printf(", Value for C Gene: ");
+    printf("%g", capacitance_Value(population.Admitance_2.C_Gene));
+    printf("\n\n");
+#endif // GENE_2_EN   
+
+#ifdef GENE_3_EN
+    printf("Admitance 3:\n");
+    printf("Value for R Gene: ");
+    printf("%g", resistor_Value(population.Admitance_3.R_Gene));
+    printf(", Value for C Gene: ");
+    printf("%g", capacitance_Value(population.Admitance_3.C_Gene));
+    printf("\n\n");
+#endif // GENE_3_EN   
+
+#ifdef GENE_4_EN
+    printf("Admitance 4:\n");
+    printf("Value for R Gene: ");
+    printf("%g", resistor_Value(population.Admitance_4.R_Gene));
+    printf(", Value for C Gene: ");
+    printf("%g", capacitance_Value(population.Admitance_4.C_Gene));
+    printf("\n\n");
+#endif // GENE_4_EN   
+
+#ifdef GENE_5_EN
+    printf("Admitance 5:\n");
+    printf("Value for R Gene: ");
+    printf("%g", resistor_Value(population.Admitance_5.R_Gene));
+    printf(", Value for C Gene: ");
+    printf("%g", capacitance_Value(population.Admitance_5.C_Gene));
+    printf("\n\n");
+#endif // GENE_5_EN 
+
+#ifdef GENE_6_EN
+    printf("Admitance 6:\n");
+    printf("Value for R Gene: ");
+    printf("%g", resistor_Value(population.Admitance_6.R_Gene));
+    printf(", Value for C Gene: ");
+    printf("%g", capacitance_Value(population.Admitance_6.C_Gene));
+    printf("\n\n");
+#endif // GENE_6_EN 
 }
 
 void print_Generation(FILTER_CHROMOSOME *population) {
     for (int i = 0; i < NUMBER_OF_MEMEBERS; i++) {
+        //print_Genes_Bitfield(population[i], i);
         print_Genes(population[i], i);
     }
 }
@@ -544,11 +612,15 @@ void gene_Swap(FILTER_CHROMOSOME *p_population, FILTER_CHROMOSOME *d_population)
     for (int top_Genes = (NUMBER_OF_MEMEBERS - 1); top_Genes > (NUMBER_OF_MEMEBERS - TOP_GENES - 1); top_Genes--) {   //Best individual of population
 
         for (int new_Admitance_Gene = 0; new_Admitance_Gene < NUMBER_OF_SONS_PER_TOP_GENE; new_Admitance_Gene++) {
+            
+            #ifdef GENE_1_EN 
             swap_Mask = VARIABLE_MASK((rand() % (16 - 1) + 1), 1);
             second_Parent = ((rand() % (NUMBER_OF_MEMEBERS - THRESHOLD_TO_RECOMBINE)) + (THRESHOLD_TO_RECOMBINE));
 
             d_population[(NUMBER_OF_MEMEBERS - top_Genes - 1) * NUMBER_OF_SONS_PER_TOP_GENE + new_Admitance_Gene].Admitance_1.R_Gene.u16 = (p_population[top_Genes].Admitance_1.R_Gene.u16 & swap_Mask) + (p_population[second_Parent].Admitance_1.R_Gene.u16 & ~swap_Mask);
             d_population[(NUMBER_OF_MEMEBERS - top_Genes - 1) * NUMBER_OF_SONS_PER_TOP_GENE + new_Admitance_Gene].Admitance_1.C_Gene.u16 = (p_population[top_Genes].Admitance_1.C_Gene.u16 & swap_Mask) + (p_population[second_Parent].Admitance_1.C_Gene.u16 & ~swap_Mask);
+            #endif //GENE_1_EN 
+
 
             #ifdef DEBUG_GENE_SWAP
                 printf("Number of Descendant: %i\n", ((NUMBER_OF_MEMEBERS - top_Genes - 1) * NUMBER_OF_SONS_PER_TOP_GENE + new_Admitance_Gene));
@@ -572,12 +644,13 @@ void gene_Swap(FILTER_CHROMOSOME *p_population, FILTER_CHROMOSOME *d_population)
                 printf("\n\n");
             #endif // DEBUG_GENE_SWAP
 
-
+            #ifdef GENE_2_EN 
             swap_Mask = VARIABLE_MASK((rand() % (16 - 1) + 1), 1);
             second_Parent = ((rand() % (NUMBER_OF_MEMEBERS - THRESHOLD_TO_RECOMBINE)) + (THRESHOLD_TO_RECOMBINE));
 
             d_population[(NUMBER_OF_MEMEBERS - top_Genes - 1) * NUMBER_OF_SONS_PER_TOP_GENE + new_Admitance_Gene].Admitance_2.R_Gene.u16 = (p_population[top_Genes].Admitance_2.R_Gene.u16 & swap_Mask) + (p_population[second_Parent].Admitance_2.R_Gene.u16 & ~swap_Mask);
             d_population[(NUMBER_OF_MEMEBERS - top_Genes - 1) * NUMBER_OF_SONS_PER_TOP_GENE + new_Admitance_Gene].Admitance_2.C_Gene.u16 = (p_population[top_Genes].Admitance_2.C_Gene.u16 & swap_Mask) + (p_population[second_Parent].Admitance_2.C_Gene.u16 & ~swap_Mask);
+            #endif //GENE_2_EN
 
             #ifdef DEBUG_GENE_SWAP
                 printf("Admitance 2, ");
@@ -600,12 +673,13 @@ void gene_Swap(FILTER_CHROMOSOME *p_population, FILTER_CHROMOSOME *d_population)
                 printf("\n\n");
             #endif // DEBUG_GENE_SWAP
 
-
+            #ifdef GENE_3_EN 
             swap_Mask = VARIABLE_MASK((rand() % (16 - 1) + 1), 1);
             second_Parent = ((rand() % (NUMBER_OF_MEMEBERS - THRESHOLD_TO_RECOMBINE)) + (THRESHOLD_TO_RECOMBINE));
 
             d_population[(NUMBER_OF_MEMEBERS - top_Genes - 1) * NUMBER_OF_SONS_PER_TOP_GENE + new_Admitance_Gene].Admitance_3.R_Gene.u16 = (p_population[top_Genes].Admitance_3.R_Gene.u16 & swap_Mask) + (p_population[second_Parent].Admitance_3.R_Gene.u16 & ~swap_Mask);
             d_population[(NUMBER_OF_MEMEBERS - top_Genes - 1) * NUMBER_OF_SONS_PER_TOP_GENE + new_Admitance_Gene].Admitance_3.C_Gene.u16 = (p_population[top_Genes].Admitance_3.C_Gene.u16 & swap_Mask) + (p_population[second_Parent].Admitance_3.C_Gene.u16 & ~swap_Mask);
+            #endif //GENE_3_EN
 
             #ifdef DEBUG_GENE_SWAP
                 printf("Admitance 3, ");
@@ -628,12 +702,13 @@ void gene_Swap(FILTER_CHROMOSOME *p_population, FILTER_CHROMOSOME *d_population)
                 printf("\n\n");
             #endif // DEBUG_GENE_SWAP
 
-
+            #ifdef GENE_4_EN 
             swap_Mask = VARIABLE_MASK((rand() % (16 - 1) + 1), 1);
             second_Parent = ((rand() % (NUMBER_OF_MEMEBERS - THRESHOLD_TO_RECOMBINE)) + (THRESHOLD_TO_RECOMBINE));
 
             d_population[(NUMBER_OF_MEMEBERS - top_Genes - 1) * NUMBER_OF_SONS_PER_TOP_GENE + new_Admitance_Gene].Admitance_4.R_Gene.u16 = (p_population[top_Genes].Admitance_4.R_Gene.u16 & swap_Mask) + (p_population[second_Parent].Admitance_4.R_Gene.u16 & ~swap_Mask);
             d_population[(NUMBER_OF_MEMEBERS - top_Genes - 1) * NUMBER_OF_SONS_PER_TOP_GENE + new_Admitance_Gene].Admitance_4.C_Gene.u16 = (p_population[top_Genes].Admitance_4.C_Gene.u16 & swap_Mask) + (p_population[second_Parent].Admitance_4.C_Gene.u16 & ~swap_Mask);
+            #endif //GEN_4_EN
 
             #ifdef DEBUG_GENE_SWAP
                 printf("Admitance 4, ");
@@ -656,8 +731,13 @@ void gene_Swap(FILTER_CHROMOSOME *p_population, FILTER_CHROMOSOME *d_population)
                 printf("\n\n");
             #endif // DEBUG_GENE_SWAP
 
+            #ifdef GENE_5_EN 
+            swap_Mask = VARIABLE_MASK((rand() % (16 - 1) + 1), 1);
+            second_Parent = ((rand() % (NUMBER_OF_MEMEBERS - THRESHOLD_TO_RECOMBINE)) + (THRESHOLD_TO_RECOMBINE));
+
             d_population[(NUMBER_OF_MEMEBERS - top_Genes - 1) * NUMBER_OF_SONS_PER_TOP_GENE + new_Admitance_Gene].Admitance_5.R_Gene.u16 = (p_population[top_Genes].Admitance_5.R_Gene.u16 & swap_Mask) + (p_population[second_Parent].Admitance_5.R_Gene.u16 & ~swap_Mask);
             d_population[(NUMBER_OF_MEMEBERS - top_Genes - 1) * NUMBER_OF_SONS_PER_TOP_GENE + new_Admitance_Gene].Admitance_5.C_Gene.u16 = (p_population[top_Genes].Admitance_5.C_Gene.u16 & swap_Mask) + (p_population[second_Parent].Admitance_5.C_Gene.u16 & ~swap_Mask);
+            #endif //GEN_5_EN
 
             #ifdef DEBUG_GENE_SWAP
                 printf("Admitance 5, ");
@@ -680,8 +760,12 @@ void gene_Swap(FILTER_CHROMOSOME *p_population, FILTER_CHROMOSOME *d_population)
                 printf("\n\n");
             #endif // DEBUG_GENE_SWAP
 
+            #ifdef GENE_6_EN 
+            swap_Mask = VARIABLE_MASK((rand() % (16 - 1) + 1), 1);
+            second_Parent = ((rand() % (NUMBER_OF_MEMEBERS - THRESHOLD_TO_RECOMBINE)) + (THRESHOLD_TO_RECOMBINE));
             d_population[(NUMBER_OF_MEMEBERS - top_Genes - 1) * NUMBER_OF_SONS_PER_TOP_GENE + new_Admitance_Gene].Admitance_6.R_Gene.u16 = (p_population[top_Genes].Admitance_6.R_Gene.u16 & swap_Mask) + (p_population[second_Parent].Admitance_6.R_Gene.u16 & ~swap_Mask);
             d_population[(NUMBER_OF_MEMEBERS - top_Genes - 1) * NUMBER_OF_SONS_PER_TOP_GENE + new_Admitance_Gene].Admitance_6.C_Gene.u16 = (p_population[top_Genes].Admitance_6.C_Gene.u16 & swap_Mask) + (p_population[second_Parent].Admitance_6.C_Gene.u16 & ~swap_Mask);
+            #endif //GEN_6_EN
 
             #ifdef DEBUG_GENE_SWAP
                 printf("Admitance 6, ");
@@ -766,12 +850,29 @@ void gene_Mutation(FILTER_CHROMOSOME* population){
 
         #endif // DEBUG_MUTATION
 
-        population[member].Admitance_1.R_Gene.u16 = (population[member].Admitance_1.R_Gene.u16 ^ temp_mask[0]);
-        population[member].Admitance_2.R_Gene.u16 = (population[member].Admitance_2.R_Gene.u16 ^ temp_mask[1]);
-        population[member].Admitance_3.R_Gene.u16 = (population[member].Admitance_3.R_Gene.u16 ^ temp_mask[2]);
-        population[member].Admitance_4.R_Gene.u16 = (population[member].Admitance_4.R_Gene.u16 ^ temp_mask[3]);
-        population[member].Admitance_5.R_Gene.u16 = (population[member].Admitance_5.R_Gene.u16 ^ temp_mask[4]);
-        population[member].Admitance_6.R_Gene.u16 = (population[member].Admitance_6.R_Gene.u16 ^ temp_mask[5]);
+        #ifdef GENE_1_EN 
+                population[member].Admitance_1.R_Gene.u16 = (population[member].Admitance_1.R_Gene.u16 ^ temp_mask[0]);
+        #endif //GEN_1_EN
+
+        #ifdef GENE_2_EN 
+                population[member].Admitance_2.R_Gene.u16 = (population[member].Admitance_2.R_Gene.u16 ^ temp_mask[1]);
+        #endif //GEN_2_EN
+
+        #ifdef GENE_3_EN 
+                population[member].Admitance_3.R_Gene.u16 = (population[member].Admitance_3.R_Gene.u16 ^ temp_mask[2]);
+        #endif //GEN_3_EN
+        
+        #ifdef GENE_4_EN 
+                population[member].Admitance_4.R_Gene.u16 = (population[member].Admitance_4.R_Gene.u16 ^ temp_mask[3]);
+        #endif //GEN_4_EN
+        
+        #ifdef GENE_5_EN 
+                population[member].Admitance_5.R_Gene.u16 = (population[member].Admitance_5.R_Gene.u16 ^ temp_mask[4]);
+        #endif //GEN_5_EN
+        
+        #ifdef GENE_6_EN 
+                population[member].Admitance_6.R_Gene.u16 = (population[member].Admitance_6.R_Gene.u16 ^ temp_mask[5]);
+        #endif //GEN_6_EN
 
         for (int i = 0; i < 6; i++) {
             temp_mask[i] = 0x0000;
@@ -821,12 +922,29 @@ void gene_Mutation(FILTER_CHROMOSOME* population){
 
         #endif // DEBUG_MUTATION
 
-        population[member].Admitance_1.C_Gene.u16 = (population[member].Admitance_1.C_Gene.u16 ^ temp_mask[0]);
-        population[member].Admitance_2.C_Gene.u16 = (population[member].Admitance_2.C_Gene.u16 ^ temp_mask[1]);
-        population[member].Admitance_3.C_Gene.u16 = (population[member].Admitance_3.C_Gene.u16 ^ temp_mask[2]);
-        population[member].Admitance_4.C_Gene.u16 = (population[member].Admitance_4.C_Gene.u16 ^ temp_mask[3]);
-        population[member].Admitance_5.C_Gene.u16 = (population[member].Admitance_5.C_Gene.u16 ^ temp_mask[4]);
-        population[member].Admitance_6.C_Gene.u16 = (population[member].Admitance_6.C_Gene.u16 ^ temp_mask[5]);
+        #ifdef GENE_1_EN 
+                    population[member].Admitance_1.C_Gene.u16 = (population[member].Admitance_1.C_Gene.u16 ^ temp_mask[0]);
+        #endif //GEN_1_EN                                                                 
+                                                                                          
+        #ifdef GENE_2_EN                                                                  
+                    population[member].Admitance_2.C_Gene.u16 = (population[member].Admitance_2.C_Gene.u16 ^ temp_mask[1]);
+        #endif //GEN_2_EN                                                                
+                                                                                         
+        #ifdef GENE_3_EN                                                                 
+                    population[member].Admitance_3.C_Gene.u16 = (population[member].Admitance_3.C_Gene.u16 ^ temp_mask[2]);
+        #endif //GEN_3_EN                                                                 
+                                                                                          
+        #ifdef GENE_4_EN                                                                  
+                    population[member].Admitance_4.C_Gene.u16 = (population[member].Admitance_4.C_Gene.u16 ^ temp_mask[3]);
+        #endif //GEN_4_EN                                                                    
+                                                                                             
+        #ifdef GENE_5_EN                                                                     
+                    population[member].Admitance_5.C_Gene.u16 = (population[member].Admitance_5.C_Gene.u16 ^ temp_mask[4]);
+        #endif //GEN_5_EN                                                                    
+                                                                                             
+        #ifdef GENE_6_EN                                                                     
+                    population[member].Admitance_6.C_Gene.u16 = (population[member].Admitance_6.C_Gene.u16 ^ temp_mask[5]);
+        #endif //GEN_6_EN
 
     }
 }
