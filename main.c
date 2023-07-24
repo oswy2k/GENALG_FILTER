@@ -966,12 +966,19 @@ void gene_Mutation(FILTER_CHROMOSOME* population){
 void filter_Select(const char* filter_Name, int cutoff_1, int cutoff_2, int gain_1, int gain_2){
 
     for (int i = 0; i < MAX_FREQUENCY/DELTA_FREQUENCY; i++) {
-        if (i*DELTA_FREQUENCY > cutoff_1 && i* DELTA_FREQUENCY <=  cutoff_2) {
-            filter_Ideal_Values[i] = gain_2;
+        
+        if (i < 800) {
+            filter_Ideal_Values[i] = 0;
         }
-        else {
-            filter_Ideal_Values[i] = gain_1;
+
+        if (i > 799) {
+            filter_Ideal_Values[i] = 1;
         }
+
+        if (i > 1200) {
+            filter_Ideal_Values[i] = 0;
+        }
+
     }
 
 }
@@ -987,21 +994,15 @@ double fitness_Filter_Assign(FILTER_CHROMOSOME *population) {
             
             gain = bp_Function(population[i], freq);
 
-            if (gain <= 0) {
-                gain = 0.0000001;
-            }
-
             gain = (20 * log10(gain));
 
-            error = filter_Ideal_Values[freq/ DELTA_FREQUENCY] - gain;
+            error = filter_Ideal_Values[freq /DELTA_FREQUENCY] - gain;
 
             squared_error = pow(error,2);
-            fitness += squared_error;
+
+            fitness += (long long)squared_error;
         }
-
-        fitness = fitness/ (MAX_FREQUENCY / DELTA_FREQUENCY);
-
-        population[i].fitness = 1/(fitness-1);
+        population[i].fitness = 1/(((double) fitness / (MAX_FREQUENCY / DELTA_FREQUENCY))+1);
     }
 
 
@@ -1020,7 +1021,7 @@ double capacitance_Value(GENE_DEF value) {
 
     double temp = 0;
     temp = (double)( (value.gen_struct.value_5_MSB << 8) + (value.gen_struct.value_8_LSB));
-    temp = temp * pow(0.1, value.gen_struct.decade + 5);
+    temp = temp * pow(0.1, value.gen_struct.decade + 8);
     return temp;
 }
 
